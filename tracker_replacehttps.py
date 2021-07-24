@@ -12,6 +12,7 @@ except qbittorrentapi.LoginFailed as e:
 print(f'qBittorrent: {qbt_client.app.version}')
 print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
 
+# 不方便暴露地址，自己填全tracker主机名
 pterUrls = 'https://tracker.'
 pterUrl = 'http://tracker.'
 
@@ -22,6 +23,7 @@ for torrent in qbt_client.torrents_info(sort='name'):
 
     # 未工作的tracker，https 改为 http
     if tr3['url'].startswith(pterUrls) and tr3['status'] == 4:
+        count += 1
         print(f'{torrent.hash[-6:]}: \033[32m{torrent.name}\033[0m ({torrent.state})')
         print(tr3['url'][:38])
         newUrl = tr3['url'].replace(pterUrls, pterUrl, 1)
