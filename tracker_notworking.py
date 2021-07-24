@@ -1,7 +1,8 @@
 import qbittorrentapi
 import urllib.parse
 
-qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8189, username='admin', password='adminadmin')
+# qb的 ip地址, port，登陆帐号密码，自行修改
+qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8089, username='admin', password='adminadmin')
 
 try:
     qbt_client.auth_log_in()
@@ -17,7 +18,7 @@ for torrent in qbt_client.torrents_info(sort='name'):
     # 这里我偷懒了，用者自便
     tr3 = torrent.trackers[3]
 
-    # 列出tracker 未工作的 stalledUP
+    # 列出tracker 未工作
     if tr3['status'] == 4:
         count += 1
         print(f'{torrent.hash[-6:]}: \033[32m{torrent.name}\033[0m ({torrent.state})')
