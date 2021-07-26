@@ -23,9 +23,9 @@ CATEGORIES = [
     ['MV', '31'],
     ['Audio', '34'],
     ['MovieEncode', '36'],
-    ['MvoieRemux', '36'],
-    ['MvoieWebdl', '36'],
-    ['MvoieBDMV', '35'],
+    ['MovieRemux', '36'],
+    ['MovieWebdl', '36'],
+    ['MovieBDMV', '35'],
     ['Other', '33']
 ]
 counts = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -41,9 +41,11 @@ def setCategory(torrent, catid):
 
 def qbAutoCategory():
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
-    skipCategories = ['儿童剧集', '儿童', 'Music']
-    # 有些组只生产 TV Series，但是在种子名上不显示 S01 这些
-    tvGroups = ['CMCTV', 'PTerWeb', 'CHDWEB', 'DBTV', 'HDCTV', 'FLTTH']
+    skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
+    # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
+    tvGroups = ['CMCTV', 'DBTV', 'FLTTH']
+    # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
+    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB', 'LeagueWEB', 'HDCTV']
     # 有些组专门生产 MV
     mvGroups = ['PterMV']
     # 有些组专门生产 Audio
@@ -60,8 +62,11 @@ def qbAutoCategory():
             if info.__contains__('season') or info.__contains__('episode') or \
             (info.__contains__('encoder') and info['encoder'] in tvGroups):
                 setCategory(torrent, 0)
-            elif re.search(r'\d季\s', torrent.name, re.I):
+            elif re.search(r'S0\d\W|\d季\W|[一二三]季\W', torrent.name, re.I):
                 setCategory(torrent, 0)
+            elif info.__contains__('encoder') and info['encoder'] in webGroups:
+                if len(torrent.files) > 3:
+                    setCategory(torrent, 0)
             elif info.__contains__('encoder') and info['encoder'] in mvGroups:
                 setCategory(torrent, 1)
             elif info.__contains__('encoder') and info['encoder'] in audioGroups:
@@ -70,10 +75,10 @@ def qbAutoCategory():
                 # 来源为原盘的
                 if info['quality'] in ['Blu-ray']:
                     # 压制 还是 原盘
-                    if re.search(r'\Wx265\W|\Wx264\W', torrent.name, re.I):
-                        setCategory(torrent, 3)
-                    elif re.search(r'\WREMUX\W', torrent.name, re.I):
+                    if re.search(r'\WREMUX\W', torrent.name, re.I):
                         setCategory(torrent, 4)
+                    elif re.search(r'\Wx265\W|\Wx264\W', torrent.name, re.I):
+                        setCategory(torrent, 3)
                     else:
                         setCategory(torrent, 6)
                 # 来源是 WEB-DL
