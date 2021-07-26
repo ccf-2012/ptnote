@@ -15,7 +15,7 @@ print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
 
 count = 0
 for torrent in qbt_client.torrents_info(sort='name'):
-    # 这里我偷懒了，用者自便
+    # 这里我偷懒了，tjupt如果是ipv6的话这里就不对了，用者自行想办法了
     tr3 = torrent.trackers[3]
 
     # 列出tracker 未工作
