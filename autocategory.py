@@ -16,6 +16,7 @@ except qbittorrentapi.LoginFailed as e:
 print(f'qBittorrent: {qbt_client.app.version}')
 print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
 
+### 注意qb的存储位置
 QB_ROOT = '/Downloads/'
 CATEGORIES = [
     ['TV', '32'],
@@ -32,7 +33,9 @@ counts = [0, 0, 0, 0, 0, 0, 0, 0]
 def setCategory(torrent, catid):
     counts[catid] += 1
     print(f'{CATEGORIES[catid][0]}: \033[{CATEGORIES[catid][1]}m{torrent.name}\033[0m ({torrent.state})')
+    ### 真要修改，就去掉下面的注释
     # torrent.setCategory(CATEGORIES[catid][0])
+    ### 要一并修改位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
     # torrnt.setLocation(QB_ROOT+CATEGORIES[catid][0])
     return
 
