@@ -1,23 +1,18 @@
 import qbittorrentapi
 import urllib.parse
 import re
-import PTN 
-# https://github.com/divijbindlish/parse-torrent-name
+import PTN
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
-qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8189, username='admin', password='adminadmin')
-
-try:
-    qbt_client.auth_log_in()
-except qbittorrentapi.LoginFailed as e:
-    print(e)
-
-# display qBittorrent info
-print(f'qBittorrent: {qbt_client.app.version}')
-print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
-
-### 注意qb的存储位置
+QB_PARAM = {
+    'host': '192.168.1.6',
+    'port': 8091,
+    'username': 'admin',
+    'password': 'adminadmin'
+}
+# 注意qb的存储位置
 QB_ROOT = '/Downloads/'
+# 分了这样 8 类，后面数字是输出字符的颜色，真改之前方便检查
 CATEGORIES = [
     ['TV', '32'],
     ['MV', '31'],
@@ -30,16 +25,19 @@ CATEGORIES = [
 ]
 counts = [0, 0, 0, 0, 0, 0, 0, 0]
 
+
 def setCategory(torrent, catid):
     counts[catid] += 1
-    print(f'{CATEGORIES[catid][0]}: \033[{CATEGORIES[catid][1]}m{torrent.name}\033[0m ({torrent.state})')
-    ### 真要修改，就去掉下面的注释
+    print(
+        f'{CATEGORIES[catid][0]}: \033[{CATEGORIES[catid][1]}m{torrent.name}\033[0m ({torrent.state})')
+    # 真要修改，就去掉下面的注释
     # torrent.setCategory(CATEGORIES[catid][0])
-    ### 要一并修改位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
+    # 要一并修改磁盘上存储的位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
     # torrnt.setLocation(QB_ROOT+CATEGORIES[catid][0])
     return
 
-def qbAutoCategory():
+
+def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
     skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
@@ -54,13 +52,14 @@ def qbAutoCategory():
     movieEncodeGroup = 'CMCT'
 
     for torrent in qbt_client.torrents_info(sort='name'):
-        torrent.use_auto_torrent_management = None
+        ### 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
+        torrent.use_auto_torrent_management = False
 
         if torrent.category not in skipCategories:
             info = PTN.parse(torrent.name)
             # 有season和episode 或 专作TV的Group
             if info.__contains__('season') or info.__contains__('episode') or \
-            (info.__contains__('encoder') and info['encoder'] in tvGroups):
+                    (info.__contains__('encoder') and info['encoder'] in tvGroups):
                 setCategory(torrent, 0)
             elif re.search(r'S0\d\W|\d季\W|[一二三]季\W', torrent.name, re.I):
                 setCategory(torrent, 0)
@@ -93,5 +92,21 @@ def qbAutoCategory():
         print(f'{CATEGORIES[i][0]} : {counts[i]}')
     print(f'Total : {sum(counts)}')
 
-if __name__ == "__main__":
-    qbAutoCategory()
+### 
+def main():
+    qbt_client = qbittorrentapi.Client(host=QB_PARAM['host'], port=QB_PARAM['port'],
+                                   username=QB_PARAM['username'], password=QB_PARAM['password'])
+
+    try:
+        qbt_client.auth_log_in()
+    except qbittorrentapi.LoginFailed as e:
+        print(e)
+
+    # display qBittorrent info
+    print(f'qBittorrent: {qbt_client.app.version}')
+    print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
+
+    qbAutoCategory(qbt_client)
+
+if __name__ == '__main__':
+    main()
