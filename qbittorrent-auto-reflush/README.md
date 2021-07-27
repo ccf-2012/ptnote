@@ -7,6 +7,18 @@
 pip3 install qbittorrentapi
 ```
 
+# 配置账号密码端口信息
+
+在`qbit-unresigered-torrent-fix.py ` 当中写入配置信息。
+
+```python
+hostname = '127.0.0.1'  # IP 或者域名，
+qb_username = 'admin'  #qb 账户
+qb_password = 'adminadmin'  #qb 密码
+```
+
+
+
 # 加入 crontab
 
 首先在命令行输入 `crontab -e `，然后写入下列代码即可。
