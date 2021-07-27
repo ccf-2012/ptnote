@@ -17,7 +17,10 @@ qb_username = 'admin'  #qb 账户
 qb_password = 'adminadmin'  #qb 密码
 ```
 
-
+# 下载脚本
+```
+wget -P /root https://raw.githubusercontent.com/ccf-2012/ptnote/main/qbittorrent-auto-reflush/qbittorrent-auto-reflush.py
+```
 
 # 加入 crontab
 
