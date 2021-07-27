@@ -5,8 +5,8 @@ import PTN
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
 QB_PARAM = {
-    'host': '192.168.1.6',
-    'port': 8091,
+    'host': '192.168.1.8',
+    'port': 8189,
     'username': 'admin',
     'password': 'adminadmin'
 }
@@ -41,10 +41,10 @@ def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
     skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
-    tvGroups = ['CMCTV', 'DBTV', 'FLTTH']
+    tvGroups = ['CMCTV',  'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
-    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB',
-                 'LeagueWEB', 'HDCTV', '52KHD', 'PTHweb', 'OurTV']
+    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB', 'DBTV', 'QHStudio', 
+                 'LeagueWEB', 'HDCTV', '52KHD', 'PTHweb', 'OurTV', 'iLoveTV']
     # 有些组专门生产 MV
     mvGroups = ['PterMV']
     # 有些组专门生产 Audio
@@ -76,7 +76,7 @@ def qbAutoCategory(qbt_client):
             elif info.__contains__('quality'):
                 # 来源为原盘的
                 if info['quality'] in ['Blu-ray']:
-                    # 压制 还是 原盘
+                    # Remux, 压制 还是 原盘
                     if re.search(r'\WREMUX\W', torrent.name, re.I):
                         setCategory(torrent, 4)
                     elif re.search(r'\Wx265\W|\Wx264\W', torrent.name, re.I):
