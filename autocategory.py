@@ -43,7 +43,8 @@ def qbAutoCategory(qbt_client):
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     tvGroups = ['CMCTV', 'DBTV', 'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
-    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB', 'LeagueWEB', 'HDCTV']
+    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB',
+                 'LeagueWEB', 'HDCTV', '52KHD', 'PTHweb', 'OurTV']
     # 有些组专门生产 MV
     mvGroups = ['PterMV']
     # 有些组专门生产 Audio
@@ -52,7 +53,7 @@ def qbAutoCategory(qbt_client):
     movieEncodeGroup = 'CMCT'
 
     for torrent in qbt_client.torrents_info(sort='name'):
-        ### 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
+        # 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
         torrent.use_auto_torrent_management = False
 
         if torrent.category not in skipCategories:
@@ -61,10 +62,12 @@ def qbAutoCategory(qbt_client):
             if info.__contains__('season') or info.__contains__('episode') or \
                     (info.__contains__('encoder') and info['encoder'] in tvGroups):
                 setCategory(torrent, 0)
-            elif re.search(r'S0\d\W|\d季\W|[一二三]季\W', torrent.name, re.I):
+            elif re.search(r'S0\d\W|\d季|第\w{1,3}季\W', torrent.name, re.I):
+                setCategory(torrent, 0)
+            elif re.search(r'\Wcomplete\W|全\d+集|\d+集全', torrent.name, re.I):
                 setCategory(torrent, 0)
             elif info.__contains__('encoder') and info['encoder'] in webGroups:
-                if len(torrent.files) > 3:
+                if len(torrent.files) > 4:
                     setCategory(torrent, 0)
             elif info.__contains__('encoder') and info['encoder'] in mvGroups:
                 setCategory(torrent, 1)
@@ -92,10 +95,12 @@ def qbAutoCategory(qbt_client):
         print(f'{CATEGORIES[i][0]} : {counts[i]}')
     print(f'Total : {sum(counts)}')
 
-### 
+###
+
+
 def main():
     qbt_client = qbittorrentapi.Client(host=QB_PARAM['host'], port=QB_PARAM['port'],
-                                   username=QB_PARAM['username'], password=QB_PARAM['password'])
+                                       username=QB_PARAM['username'], password=QB_PARAM['password'])
 
     try:
         qbt_client.auth_log_in()
@@ -107,6 +112,7 @@ def main():
     print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
 
     qbAutoCategory(qbt_client)
+
 
 if __name__ == '__main__':
     main()
