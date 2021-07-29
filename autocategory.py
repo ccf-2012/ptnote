@@ -41,41 +41,53 @@ def setCategory(torrent, catstr):
 
 def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
-    skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
+    skipCategories = []  # ['儿童剧集', '儿童', 'Music', 'Audio']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     tvGroups = ['CMCTV',  'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
-    webGroups = ['CHDWEB', 'PTerWEB', 'HaresWEB', 'DBTV', 'QHStudio',
-                 'LeagueWEB', 'HDCTV', '52KHD', 'PTHweb', 'OurTV', 'iLoveTV']
+    webGroups = ['CHDWEB', 'PTERWEB', 'HARESWEB', 'DBTV', 'QHSTUDIO',
+                 'LEAGUEWEB', 'HDCTV', '52KHD', 'PTHWEB', 'OURTV', 'ILOVETV']
     # 有些组专门生产 MV
-    mvGroups = ['PterMV']
+    mvGroups = ['PTERMV']
     # 有些组专门生产 Audio
-    audioGroups = ['PTHAudio']
+    audioGroups = ['PTHAUDIO']
     # 有些组专门作压制，但是不在种子名上标记
     movieEncodeGroup = 'CMCT'
 
+    # for torrent in qbt_client.torrents_info(sort='name', category='Music'):
     for torrent in qbt_client.torrents_info(sort='name'):
         # 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
         torrent.use_auto_torrent_management = False
 
         if torrent.category not in skipCategories:
             info = PTN.parse(torrent.name)
+            # encoder 先预处理一下
+            if info.__contains__('encoder'):
+                teamstr = info['encoder'].strip().upper()
+                if teamstr.find('.') > 0:
+                    teamstr = teamstr.split('.')[0]
+                if teamstr.find('@') > 0:
+                    teamstr = teamstr.split('@')[1]
+            else:
+                teamstr = ''
+
+            # MV 也会有 episode，要先按group分掉
+            if info.__contains__('encoder') and teamstr in mvGroups:
+                setCategory(torrent, 'MV')
+            elif info.__contains__('encoder') and teamstr in audioGroups:
+                setCategory(torrent, 'Audio')
             # 有season和episode 或 专作TV的Group
-            if info.__contains__('season') or info.__contains__('episode') or \
-                    (info.__contains__('encoder') and info['encoder'] in tvGroups):
+            elif info.__contains__('season') or info.__contains__('episode') or \
+                    (info.__contains__('encoder') and teamstr in tvGroups):
                 setCategory(torrent, 'TV')
             elif re.search(r'S0\d\W|\d季|第\w{1,3}季\W', torrent.name, re.I):
                 setCategory(torrent, 'TV')
             elif re.search(r'\Wcomplete\W|全\d+集|\d+集全', torrent.name, re.I):
                 setCategory(torrent, 'TV')
-            elif info.__contains__('encoder') and info['encoder'] in webGroups:
-                ### TODO: 取出里面的文件名进行parse检查
+            elif info.__contains__('encoder') and teamstr in webGroups:
+                ### TODO: 取出里面的文件名进行PTN.parse检查
                 if len(torrent.files) > 4:
                     setCategory(torrent, 'TV')
-            elif info.__contains__('encoder') and info['encoder'] in mvGroups:
-                setCategory(torrent, 'MV')
-            elif info.__contains__('encoder') and info['encoder'] in audioGroups:
-                setCategory(torrent, 'Audio')
             elif info.__contains__('quality'):
                 # 来源为原盘的
                 if info['quality'] in ['Blu-ray']:
@@ -101,7 +113,8 @@ def qbAutoCategory(qbt_client):
                         setCategory(torrent, 'MovieWeb4K')
                     else:
                         setCategory(torrent, 'MovieWebdl')
-            elif info.__contains__('encoder') and info['encoder'].find(movieEncodeGroup):
+            # 所有以上都不行了，按组就对应了
+            elif info.__contains__('encoder') and teamstr in movieEncodeGroup:
                 setCategory(torrent, 'MovieEncode')
             else:
                 setCategory(torrent, 'Other')
