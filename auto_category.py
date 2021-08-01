@@ -5,25 +5,27 @@ import PTN
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
 QB_PARAM = {
-    'host': '192.168.1.8',
-    'port': 8189,
+    'host': '192.168.1.6',
+    'port': 8091,
     'username': 'admin',
     'password': 'adminadmin'
 }
 # 注意qb的存储位置
-QB_ROOT = '/Downloads/'
+QB_ROOT = '/downloads/'
+# QB_ROOT = '/Downloads/'
+
 # 分了这样 11 类，后面数字是输出字符的颜色，真改之前方便检查
 CATEGORIES = {
     'TV': ['TV', '32', 0],
     'MV': ['MV', '31', 0],
     'Audio': ['Audio', '34', 0],
-    'MovieEncode': ['MovieEncode', '36', 0],
-    'MovieRemux': ['MovieRemux', '36', 0],
-    'Movie4K': ['Movie4K', '36', 0],
-    'MovieWebdl': ['MovieWebdl', '36', 0],
-    'MovieWeb4K': ['MovieWeb4K', '36', 0],
-    'MovieBDMV': ['MovieBDMV', '35', 0],
-    'MovieBDMV4K': ['MovieBDMV4K', '35', 0],
+    'MovieEncode': ['MovieEncode', '36', 0],  # 压制 1080p and lower, 适合emby
+    'MovieRemux': ['MovieRemux', '36', 0],    # Remux 1080p and lower, 适合emby
+    'Movie4K': ['Movie4K', '36', 0],          # 压制和Remux 4K，适合emby
+    'MovieWebdl': ['MovieWebdl', '36', 0],    # Web DL，适合emby
+    'MovieWeb4K': ['MovieWeb4K', '36', 0],    # Web DL，适合emby
+    'MovieBDMV': ['MovieBDMV', '35', 0],      # 原盘, 适合播放机 & kodi
+    'MovieBDMV4K': ['MovieBDMV4K', '35', 0],  # 原盘 4K, 适合播放机 & kodi
     'Other': ['Other', '33', 0]
 }
 
@@ -33,7 +35,7 @@ def setCategory(torrent, catstr):
     print(
         f'{CATEGORIES[catstr][0]}: \033[{CATEGORIES[catstr][1]}m{torrent.name}\033[0m ({torrent.state})')
     # 真要修改，就去掉下面的注释
-    torrent.setCategory(CATEGORIES[catstr][0])
+    # torrent.setCategory(CATEGORIES[catstr][0])
     # 要一并修改磁盘上存储的位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
     # 由于同一位置会有多站辅种，有概率会导致一些站点设置存储位置后重新校验，风险预警
     # torrent.setLocation(QB_ROOT+CATEGORIES[catstr][0])
@@ -49,7 +51,7 @@ def qbInitCategory(qbt_client):
 
 def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
-    skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
+    skipCategories = ['儿童剧集', '儿童', 'Child', 'ChildTV', 'Music', 'Audio']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     tvGroups = ['CMCTV',  'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
@@ -65,7 +67,8 @@ def qbAutoCategory(qbt_client):
     # for torrent in qbt_client.torrents_info(sort='name', category='Music'):
     for torrent in qbt_client.torrents.info(sort='name'):
         # 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
-        torrent.use_auto_torrent_management = None
+        torrent.use_auto_torrent_management = False
+        torrent.setAutoManagement(False)
 
         if torrent.category not in skipCategories:
             info = PTN.parse(torrent.name)
@@ -123,6 +126,8 @@ def qbAutoCategory(qbt_client):
                         setCategory(torrent, 'MovieWebdl')
             # 所有以上都不行了，按组就对应了
             elif info.__contains__('encoder') and teamstr in movieEncodeGroup:
+                setCategory(torrent, 'MovieEncode')
+            elif re.search(r'￡CMCT', torrent.name, re.I):
                 setCategory(torrent, 'MovieEncode')
             else:
                 setCategory(torrent, 'Other')
