@@ -33,15 +33,23 @@ def setCategory(torrent, catstr):
     print(
         f'{CATEGORIES[catstr][0]}: \033[{CATEGORIES[catstr][1]}m{torrent.name}\033[0m ({torrent.state})')
     # 真要修改，就去掉下面的注释
-    # torrent.setCategory(CATEGORIES[catstr][0])
+    torrent.setCategory(CATEGORIES[catstr][0])
     # 要一并修改磁盘上存储的位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
+    # 由于同一位置会有多站辅种，有概率会导致一些站点设置存储位置后重新校验，风险预警
     # torrent.setLocation(QB_ROOT+CATEGORIES[catstr][0])
     return
 
 
+def qbInitCategory(qbt_client):
+    cats = qbt_client.torrents_categories()
+    for cat in CATEGORIES.items():
+        if not cats.get(cat[0], None):
+            qbt_client.torrents_create_category(cat[0], QB_ROOT+cat[0])
+
+
 def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
-    skipCategories = []  # ['儿童剧集', '儿童', 'Music', 'Audio']
+    skipCategories = ['儿童剧集', '儿童', 'Music', 'Audio']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     tvGroups = ['CMCTV',  'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
@@ -55,9 +63,9 @@ def qbAutoCategory(qbt_client):
     movieEncodeGroup = 'CMCT'
 
     # for torrent in qbt_client.torrents_info(sort='name', category='Music'):
-    for torrent in qbt_client.torrents_info(sort='name'):
+    for torrent in qbt_client.torrents.info(sort='name'):
         # 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
-        torrent.use_auto_torrent_management = False
+        torrent.use_auto_torrent_management = None
 
         if torrent.category not in skipCategories:
             info = PTN.parse(torrent.name)
@@ -138,6 +146,8 @@ def main():
     # display qBittorrent info
     print(f'qBittorrent: {qbt_client.app.version}')
     print(f'qBittorrent Web API: {qbt_client.app.web_api_version}')
+
+    qbInitCategory(qbt_client)
 
     qbAutoCategory(qbt_client)
 
