@@ -10,6 +10,7 @@ conda activate qb
 ```
 2. qbittorrent-api & parse-torrent-title
 * https://qbittorrent-api.readthedocs.io/en/latest/index.html
+* https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-4.1)
 * https://github.com/platelminto/parse-torrent-title
 ```sh 
 pip install qbittorrent-api

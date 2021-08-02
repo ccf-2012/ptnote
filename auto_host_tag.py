@@ -5,8 +5,8 @@ import re
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
 QB_PARAM = {
-    'host': '192.168.1.6',
-    'port': 8091,
+    'host': '192.168.1.8',
+    'port': 8189,
     'username': 'admin',
     'password': 'adminadmin'
 }
@@ -14,7 +14,7 @@ QB_PARAM = {
 
 def qbAutoTag(qbt_client):
 
-    for torrent in qbt_client.torrents_info(sort='name'):
+    for torrent in qbt_client.torrents_info(sort='name', tag=''):
         # 这里我偷懒了，如有问题，使用者自行想办法了
         tr3 = torrent.trackers[3]
 
