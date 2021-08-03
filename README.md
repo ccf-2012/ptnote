@@ -27,5 +27,23 @@ pip install parse-torrent-title
 5. auto_host_tag.py, 自动添加站点标签：根据tracker主机名添加标签，便于在webui中进行查看管理。未工作的tracker会额外添加一个`未工作`标签。
 
 
+## 功能设想
+* 使用PT的过程中，人们非常看重保种，pter下载自己觉得有意思的片子，并在之后一段时间内维持在下载器中作种，对于站点和个人后续的使用来说都是有益的。所以，同时在下载器中和媒体服务器（如Emby）的媒体库目录中，对所下载的文件保持有序的管理，是有意义的。
+* 幸运的是，QB提供了分类（Category）和存储目录（Save Location）的管理功能，并提供了api，所以这里写了一些脚本，以方便地在QB中维护所下载的文件。
 
+* 设想的使用场景是这样子，如果是初次使用：
+1. 设置好QB：
+   1. QB下载器的ip, 端口，用户名，密码，`QB_PARAM`
+   2. QB下载器的下载目录，`QB_ROOT`
+2. 如果你已经有一些分类作好了维护，不希望对它们作重新分类，请设置`skipCategories`
+3. 初次使用`auto_category.py`时，`setCategory` 函数中先不要把执行分类的语句注释拿掉，运行一次看看输出，如果对结果满意再拿掉注释，使分类和目录搬移生效。
+4. 运行 `auto_host_tag.py` 对种子设置标签。
+
+* 如果已经对现有几千个种子跑过一次脚本，日常还在不断手动添加种子或开着flexget，那么可以：
+1. 设置一个叫 `NEW` (或 `RSS` 或别的你喜欢的名字) 的分类，新加的种子，添加到这个分类中（在flexget中可以简单地设置这个分类）
+2. 修改`auto_category.py`和`auto_host_tag.py`的这一行，使操作局限在`NEW`这个分类的种子
+```py
+for torrent in qbt_client.torrents_info(sort='name', category='NEW')
+```
+3. 手工或者你喜欢的方式，运行 `auto_category.py`和`auto_host_tag.py`这两个脚本
 
