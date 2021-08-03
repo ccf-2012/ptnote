@@ -36,11 +36,11 @@ pip install parse-torrent-title
    1. QB下载器的ip, 端口，用户名，密码，`QB_PARAM`
    2. QB下载器的下载目录，`QB_ROOT`，**注意这里绝对不能写错**
 2. 如果你已经有一些分类作好了维护，不希望对它们作重新分类，请设置`skipCategories`
-3. 初次使用`auto_category.py`时，`setCategory` 函数中先不要把执行分类的语句注释拿掉，运行一次看看输出，如果对结果满意再拿掉注释，使分类和目录搬移生效。
-4. 还有个 `auto_host_tag.py` 脚本，可以对将tracker主机名提取出来作标签，方便在QB中归类管理，这个基本就没有什么风险。
+3. 初次使用`auto_category.py`时，`setCategory` 函数中先不要把执行分类的语句注释拿掉，运行一次看看输出，如果对结果满意再拿掉注释，再次运行使分类和目录搬移生效。
+4. 还有个 `auto_host_tag.py` 脚本，可以将tracker主机名提取出来作标签，方便在QB中归类管理，这个基本就没有什么风险。
 
 * 如果已经对现有几千个种子跑过一次脚本，日常还在不断手动添加种子或开着flexget，那么可以：
-1. 设置一个叫 `NEW` (或 `RSS` 或别的你喜欢的名字) 的分类，新加的种子，添加到这个分类中（在flexget中可以简单地设置这个分类）
+1. 设置一个独立的分类名，比如 `NEW` (或 `RSS` 或别的你喜欢的名字)，新加的种子，添加到这个分类中（在flexget中可以简单地设置这个分类）
 2. 修改`auto_category.py`和`auto_host_tag.py`的这一行，使操作局限在`NEW`这个分类的种子
 ```py
 for torrent in qbt_client.torrents_info(sort='name', category='NEW')
