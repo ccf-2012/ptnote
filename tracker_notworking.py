@@ -2,7 +2,7 @@ import qbittorrentapi
 import urllib.parse
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
-qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8089, username='admin', password='adminadmin')
+qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8189, username='admin', password='adminadmin')
 
 try:
     qbt_client.auth_log_in()
@@ -23,5 +23,9 @@ for torrent in qbt_client.torrents_info(sort='name'):
         count += 1
         print(f'{torrent.hash[-6:]}: \033[32m{torrent.name}\033[0m ({torrent.state})')
         print( f'\033[31m {urllib.parse.urlparse(tr3["url"]).netloc}\033[0m   \033[34m  {tr3["msg"]} \033[0m')
+        torrent.addTags(['未工作'])
+    else:
+        torrent.removeTags(['未工作'])
+
 
 print(f'Total: {count}')
