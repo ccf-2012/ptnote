@@ -7,6 +7,6 @@ do
 	if [[ "$result" != "" ]];then
 	    echo "赠送猫粮 失败"
 	else
-        echo "赠送猫粮 成功"
+            echo "赠送猫粮 成功"
 	fi
 done
