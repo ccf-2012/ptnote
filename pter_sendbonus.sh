@@ -9,8 +9,8 @@ do
 	ret=$(echo $cm)
 	result=$(echo $ret | grep "你成功赠送了猫粮。")
 	if [[ "$result" != "" ]];then
-	    echo "赠送猫粮 失败"
+        echo "赠送猫粮 失败"
 	else
-            echo "赠送猫粮 成功"
+        echo "赠送猫粮 成功"
 	fi
 done
