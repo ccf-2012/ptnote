@@ -41,7 +41,7 @@ function getSeedList() {
 
   for (var i = 0; i < seedList.length; i++) {
     var seedName = seedList[i].title;
-    if (seedName.indexOf("-PTer") > 0) {
+    if (seedName.indexOf("PTer") > 0) {
       var seedSizeStr = seedListSize[i + 1].innerText;
       var num = seedSizeStr.match(regex).map(function (v) {
         return parseFloat(v);
