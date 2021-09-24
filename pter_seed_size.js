@@ -37,7 +37,7 @@ function getSeedList() {
     "span",
     {}
   );
-  var outputstr = "";
+  var outputstr = '<p ><table style="margin: 0px auto; font-size: 12px; font-weight:normal;"><tbody>';
   var countPTer = 0;
   var sizePTer = 0;
   var regex = /[+-]?\d+(\.\d+)?/g;
@@ -63,27 +63,31 @@ function getSeedList() {
       }
       countPTer++;
       sizePTer += size;
-      outputstr = outputstr + seedName + " - " + seedSizeStr + "<br>";
+      outputstr = outputstr + "<tr>";
+      outputstr = outputstr + "<td>" + seedName + " </td> <td>" + seedSizeStr + "</td>";
+      outputstr = outputstr + "</tr>";
     }
   }
 
   summary.innerHTML =
     "<p>官种数量 " + countPTer + " 官种大小 " + formatBytes(sizePTer) + "<br></p>";
+
+  var torrentListBtn = GM_addElement(summary, "button",
+    {
+      id: "seed_list",
+      name: "官种列表",
+    }
+  );
+  torrentListBtn.innerHTML = "官种列表";
+  torrentListBtn.onclick = function () {
+    var torrentList = GM_addElement(summary, "span", {style: "text-align:left;"});
+    torrentList.innerHTML = outputstr + '</p>';
+  };
+
 }
 
 (function () {
   "use strict";
 
-  var summaryButton = GM_addElement(
-    document.querySelector("#outer > h1"),
-    "button",
-    {
-      id: "summary_seed",
-      name: "官种统计",
-    }
-  );
-  summaryButton.innerHTML = "官种统计";
-  document.querySelector('button[name="官种统计"]').onclick = function () {
-    getSeedList(document);
-  };
+  getSeedList(document);
 })();
