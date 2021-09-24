@@ -25,7 +25,8 @@ pip install parse-torrent-title
 3. auto_category.py , 自动分类：Movie 和 TV 在刮削的时候要分开，然后MovieEncode可以emby和nPlayer播放，BDMV的就放单独目录去，到电视上看时可以用。如果你在下载时没有作好分类，那么使用本脚本根据种子名进行快速分类。现在分了 TV, MV, Audio, MovieEncode, MovieRemux, Movie4K, MovieWebdl, MovieWeb4K, MovieBDMV, MovieBDMV4K, Other 这样11类。根据种子命名以及组名进行识别。由于命名经常不规范，分类要靠猜测，所以会有错漏需要手工调整。
 4. qbittorrent-auto-reflush，在某些外站可能会出现 irssi 下载种子要比 tracker 更新快的情况，这个脚本可以自动刷新 qbittorrent 出现的 `unregister` 的种子，详细用法请点击文件夹查看。
 5. auto_host_tag.py, 自动添加站点标签：根据tracker主机名添加标签，便于在webui中进行查看管理。未工作的tracker会额外添加一个`未工作`标签。
-
+6. pter_seed_size.js, 想着进保种组，发现需要自己统计一下自己保了多少官种，就写了这个脚本。脚本是油猴中使用，加载后，在这个页面：`https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding` 其中userid后面的12345改为你的uid。然后就会看到有作种统计按钮，点击后显示官种数量和大小。
+7. pter_sendbonus.sh 和 send_naitang.sh，分别为在猫站和白兔站批量发送猫粮和奶糖，`...用户名...`替换为你要送的用户username, `...COOKIE...`替换为你猫站或白兔上的Cookie, 发送数量改循环次数
 
 ## 自动分类功能的应用设想
 * 使用PT的过程中，人们非常看重保种，pter下载自己准备观看的片子，并在之后一段时间内维持在下载器中作种，对于站点和个人后续的使用来说都是有益的。所以，同时在下载器中和媒体服务器（如Emby）的媒体库目录中，对所下载的文件保持有序的管理，是有意义的。
