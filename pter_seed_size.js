@@ -10,6 +10,9 @@
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
+// 油猴中加载后，访问面面： https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding  
+// 其中userid后面的12345改为你的uid
+
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
 
