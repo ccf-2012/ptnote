@@ -37,7 +37,7 @@ function getSeedList() {
     "span",
     {}
   );
-  var outputstr = '<p ><table style="margin: 0px auto; font-size: 12px; font-weight:normal;"><tbody>';
+  var outputstr = '<p ><table style="margin: 0px auto; font-size: 14px; font-weight:normal;"><tbody>';
   var countPTer = 0;
   var sizePTer = 0;
   var regex = /[+-]?\d+(\.\d+)?/g;
