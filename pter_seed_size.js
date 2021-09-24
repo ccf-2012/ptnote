@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         官种统计
-// @namespace    https://github.com/ccf-2012/ptnote/blob/main/pter_seed_size.js
+// @name         保种组统计
+// @namespace    https://greasyfork.org/zh-CN/scripts/432866
 // @version      0.1
 // @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
