@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         保种组统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432866
-// @version      0.3
+// @version      0.4
 // @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
@@ -10,7 +10,7 @@
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-// 油猴中加载后，访问面面： https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding  
+// 油猴中加载后，访问面面： https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding
 // 其中userid后面的12345改为你的uid
 
 function formatBytes(bytes, decimals = 2) {
@@ -37,7 +37,6 @@ function getSeedList() {
     "span",
     {}
   );
-  var outputstr = '<p ><table style="margin: 0px auto; font-size: 14px; font-weight:normal;"><tbody>';
   var countPTer = 0;
   var sizePTer = 0;
   var regex = /[+-]?\d+(\.\d+)?/g;
@@ -45,6 +44,12 @@ function getSeedList() {
   for (var i = 0; i < seedList.length; i++) {
     var seedName = seedList[i].title;
     if (seedName.indexOf("PTer") > 0) {
+      var pterTag = GM_addElement(seedList[i], "a", {
+        //   class: "chs_tag chs_tag-gf",
+        class: "chs_tag chs_tag-jz",
+        style: "margin-left: 2px;",
+        textContent: "官种"
+      });
       var seedSizeStr = seedListSize[i + 1].innerText;
       var num = seedSizeStr.match(regex).map(function (v) {
         return parseFloat(v);
@@ -63,26 +68,15 @@ function getSeedList() {
       }
       countPTer++;
       sizePTer += size;
-      outputstr = outputstr + "<tr>";
-      outputstr = outputstr + "<td>" + seedName + " </td> <td>" + seedSizeStr + "</td>";
-      outputstr = outputstr + "</tr>";
     }
   }
 
   summary.innerHTML =
-    "<p>官种数量 " + countPTer + " 官种大小 " + formatBytes(sizePTer) + "<br></p>";
-
-  var torrentListBtn = GM_addElement(summary, "button",
-    {
-      id: "seed_list",
-      name: "官种列表",
-    }
-  );
-  torrentListBtn.innerHTML = "官种列表";
-  torrentListBtn.onclick = function () {
-    var torrentList = GM_addElement(summary, "span", {style: "text-align:left;"});
-    torrentList.innerHTML = outputstr + '</p>';
-  };
+    "<p>官种数量 " +
+    countPTer +
+    " 官种大小 " +
+    formatBytes(sizePTer) +
+    "<br></p>";
 
 }
 
