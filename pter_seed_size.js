@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         作种统计
-// @namespace    http://tampermonkey.net/
+// @name         官种统计
+// @namespace    https://github.com/ccf-2012/ptnote/blob/main/pter_seed_size.js
 // @version      0.1
-// @description  count the size of the seeding torrents.
+// @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
 // @icon         https://pterclub.com/favicon.ico
@@ -65,7 +65,7 @@ function getSeedList() {
   }
 
   summary.innerHTML =
-    "<p>官种总数 " + countPTer + " 官种大小 " + formatBytes(sizePTer) + "<br></p>";
+    "<p>官种数量 " + countPTer + " 官种大小 " + formatBytes(sizePTer) + "<br></p>";
 }
 
 (function () {
@@ -76,11 +76,11 @@ function getSeedList() {
     "button",
     {
       id: "summary_seed",
-      name: "作种统计",
+      name: "官种统计",
     }
   );
-  summaryButton.innerHTML = "作种统计";
-  document.querySelector('button[name="作种统计"]').onclick = function () {
+  summaryButton.innerHTML = "官种统计";
+  document.querySelector('button[name="官种统计"]').onclick = function () {
     getSeedList(document);
   };
 })();
