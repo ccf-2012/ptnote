@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         保种组统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432866
-// @version      0.2
+// @version      0.3
 // @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
