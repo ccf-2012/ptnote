@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         保种组统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432866
-// @version      0.5
+// @version      0.5.1
 // @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
 // @match        https://pterclub.com/userdetails.php?id=*
@@ -44,13 +44,15 @@ function getSeedList() {
 
   for (var i = 0; i < seedList.length; i++) {
     var seedName = seedList[i].title;
-    if (seedName.indexOf("PTer") > 0) {
-      var pterTag = GM_addElement(seedList[i], "a", {
-        //   class: "chs_tag chs_tag-gf",
-        class: "chs_tag chs_tag-jz",
-        style: "margin-left: 2px;",
-        textContent: "官种"
-      });
+    //  if (seedName.indexOf("PTer") > 0) {
+    if (seedName.match(/[@-]\s?(PTer)/i))  {
+        seedList[i].parentNode.style = "background-color: lightgreen;";
+      // var pterTag = GM_addElement(seedList[i], "a", {
+      //   //   class: "chs_tag chs_tag-gf",
+      //   class: "chs_tag chs_tag-jz",
+      //   style: "margin-left: 2px;",
+      //   textContent: "官种"
+      // });
       var seedSizeStr = seedListSize[i + 1].innerText;
       var num = seedSizeStr.match(regex).map(function (v) {
         return parseFloat(v);
