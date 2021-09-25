@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         保种组统计
-// @namespace    https://greasyfork.org/zh-CN/scripts/432866
-// @version      0.4
+// @namespace    https://greasyfork.org/zh-CN/scripts/432937
+// @version      0.5
 // @description  count the size of the seeding HDSky torrents.
 // @author       ccf2012
 // @match        https://hdsky.me/userdetails.php?id=*
