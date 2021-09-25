@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         保种组统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432866
-// @version      0.4
+// @version      0.5
 // @description  count the size of the seeding PTer torrents.
 // @author       ccf2012
+// @match        https://pterclub.com/userdetails.php?id=*
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
 // @icon         https://pterclub.com/favicon.ico
 // @grant        GM_addElement
-// @grant        GM.xmlHttpRequest
+// @grant        GM_openInTab
 // ==/UserScript==
 
 // 油猴中加载后，访问面面： https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding
@@ -82,6 +83,23 @@ function getSeedList() {
 
 (function () {
   "use strict";
+  if (window.location.href.match(/getusertorrentlist/i)) {
+    getSeedList(document);
+  }
+  else {
+    var useridStr = window.location.href.match(/\/userdetails.php\?id=(\d+)/i)[1];
+    // var params = url.split("?")[1].split("&");
+    var urlTorrentList =
+      "https://pterclub.com/getusertorrentlist.php?userid=" +
+      useridStr +
+      "&type=seeding";
 
-  getSeedList(document);
+      var summary = GM_addElement(
+        document.querySelector("#row_current_seeding"),
+        "button",
+        {}
+      )
+      summary.innerHTML = '<a href='+urlTorrentList+'>保种统计</a>';
+  }
+
 })();
