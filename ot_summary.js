@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         官种保种统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432969
-// @version      0.6.3
-// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt
+// @version      0.7
+// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt, TTG
 // @author       ccf2012
 // @match        https://hdsky.me/userdetails.php?id=*
 // @match        https://ourbits.club/userdetails.php?id=*
@@ -11,6 +11,7 @@
 // @match        https://pthome.net/userdetails.php?id=*
 // @match        https://www.hddolby.com/userdetails.php?id=*
 // @match        https://www.tjupt.org/userdetails.php?id=*
+// @match        https://totheglory.im/userdetails.php?id=*
 // @match        https://pterclub.com/userdetails.php?id=*
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
 // @icon         https://ourbits.club//favicon.ico
@@ -25,12 +26,16 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(16) > td.rowfollow",
     matchRegex: /[@-]\s?(HDS)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://pterclub.com": {
     seedList: "#outer > table > tbody > tr > td:nth-child(2) > a:nth-child(1)",
     seedListSize: "#outer > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#outer > h1",
     matchRegex: /[@-]\s?(PTer)/i,
+    useTitle: true,
+    ajaxGet: false,
   },
   "https://ourbits.club": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -38,6 +43,8 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(18) > td.rowfollow",
     matchRegex: /[@-]\s?(Our|iLoveTV|FLTTH|Ao|MGs|HosT|iLoveHD)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://chdbits.co": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -45,6 +52,8 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(16) > td.rowfollow",
     matchRegex: /[@-]\s?(CHD|blucook|HQC|GBT|KAN)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://club.hares.top": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -52,6 +61,8 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(18) > td.rowfollow",
     matchRegex: /[@-]\s?(Hares)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://pthome.net": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -59,6 +70,8 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(17) > td.rowfollow",
     matchRegex: /[@-]\s?(PTH)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://www.hddolby.com": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -66,6 +79,8 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(17) > td.rowfollow",
     matchRegex: /[@-]\s?(Dream|DBTV|QHstudIo|HDo)/i,
+    useTitle: true,
+    ajaxGet: true,
   },
   "https://www.tjupt.org": {
     seedList: "table > tbody > tr > td:nth-child(2) > a",
@@ -73,6 +88,17 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(19) > td.rowfollow",
     matchRegex: /[@-]\s?(TJUPT)/i,
+    useTitle: true,
+    ajaxGet: true,
+  },
+  "https://totheglory.im": {
+    seedList: "#ka2 > table > tbody > tr > td:nth-child(2) > a",
+    seedListSize: "#ka2 > table > tbody > tr > td:nth-child(4)",
+    seedingSummary:
+      "#main_table > tbody > tr:nth-child(1) > td > table > tbody > tr > td > table > tbody > tr:nth-child(16) > td:nth-child(2)",
+    matchRegex: /[@-]\s?(TTG|Wiki|NGB|DoA|ARiN|ExREN)/i,
+    useTitle: false,
+    ajaxGet: false,
   },
 };
 
@@ -105,7 +131,10 @@ function getSeedList(seedHtml) {
   var regex = /[+-]?\d+(\.\d+)?/g;
 
   for (var i = 0; i < seedList.length; i++) {
-    var seedName = seedList[i].title;
+    var seedName;
+    if (config[window.location.origin].useTitle) seedName = seedList[i].title;
+    else seedName = seedList[i].innerText;
+
     if (seedName.match(config[window.location.origin].matchRegex)) {
       seedList[i].parentNode.style = "background-color: lightgreen;";
       var seedSizeStr = seedListSize[i + 1].innerText;
@@ -132,13 +161,12 @@ function getSeedList(seedHtml) {
 
   summary.innerHTML =
     "<p>官种数量 " + countOT + " 官种大小 " + formatBytes(sizeOT) + "<br></p>";
-  if (window.location.origin != "https://pterclub.com")
+  if (config[window.location.origin].ajaxGet)
     summary.innerHTML += seedHtml.innerHTML;
 }
 
 (function () {
   "use strict";
-
   if (window.location.origin == "https://pterclub.com") {
     if (window.location.href.match(/getusertorrentlist/i)) {
       getSeedList(document);
@@ -171,24 +199,28 @@ function getSeedList(seedHtml) {
     var urlTorrentList;
 
     sumOtBtn.onclick = function () {
-      var useridStr = window.location.href.match(
-        /\/userdetails.php\?id=(\d+)/i
-      )[1];
-      urlTorrentList =
-        window.location.origin +
-        "/getusertorrentlistajax.php?userid=" +
-        useridStr +
-        "&type=seeding";
+      if (window.location.origin == "https://totheglory.im") {
+        getSeedList(document);
+      } else {
+        var useridStr = window.location.href.match(
+          /\/userdetails.php\?id=(\d+)/i
+        )[1];
+        urlTorrentList =
+          window.location.origin +
+          "/getusertorrentlistajax.php?userid=" +
+          useridStr +
+          "&type=seeding";
 
-      GM.xmlHttpRequest({
-        method: "GET",
-        url: urlTorrentList,
-        onload: function (response) {
-          var responseHTML = document.createElement("html");
-          responseHTML.innerHTML = response.response;
-          getSeedList(responseHTML);
-        },
-      });
+        GM.xmlHttpRequest({
+          method: "GET",
+          url: urlTorrentList,
+          onload: function (response) {
+            var responseHTML = document.createElement("html");
+            responseHTML.innerHTML = response.response;
+            getSeedList(responseHTML);
+          },
+        });
+      }
     };
   }
 })();
