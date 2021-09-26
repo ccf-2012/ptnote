@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         官种保种统计
-// @namespace    https://greasyfork.org/zh-CN/scripts/
-// @version      0.5
-// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares.
+// @namespace    https://greasyfork.org/zh-CN/scripts/432969
+// @version      0.6.1
+// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH.
 // @author       ccf2012
 // @match        https://hdsky.me/userdetails.php?id=*
 // @match        https://ourbits.club/userdetails.php?id=*
 // @match        https://chdbits.co/userdetails.php?id=*
 // @match        https://club.hares.top/userdetails.php?id=*
+// @match        https://pthome.net/userdetails.php?id=*
 // @match        https://pterclub.com/userdetails.php?id=*
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
 // @icon         https://ourbits.club//favicon.ico
@@ -49,6 +50,13 @@ var config = {
     seedingSummary:
       "table > tbody > tr > td > table > tbody > tr:nth-child(18) > td.rowfollow",
     matchRegex: /[@-]\s?(Hares)/i,
+  },
+  "https://pthome.net": {
+    seedList: "table > tbody > tr > td:nth-child(2) > a",
+    seedListSize: "table > tbody > tr > td:nth-child(3)",
+    seedingSummary:
+      "table > tbody > tr > td > table > tbody > tr:nth-child(17) > td.rowfollow",
+    matchRegex: /[@-]\s?(PTH)/i,
   },
 };
 
