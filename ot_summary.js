@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         官种保种统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432969
-// @version      0.6.1
+// @version      0.6.2
 // @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH.
 // @author       ccf2012
 // @match        https://hdsky.me/userdetails.php?id=*
@@ -9,6 +9,8 @@
 // @match        https://chdbits.co/userdetails.php?id=*
 // @match        https://club.hares.top/userdetails.php?id=*
 // @match        https://pthome.net/userdetails.php?id=*
+// @match        https://www.hddolby.com/userdetails.php?id=*
+// @match        https://www.tjupt.org/userdetails.php?id=*
 // @match        https://pterclub.com/userdetails.php?id=*
 // @match        https://pterclub.com/getusertorrentlist.php?userid=*&type=seeding
 // @icon         https://ourbits.club//favicon.ico
@@ -58,6 +60,20 @@ var config = {
       "table > tbody > tr > td > table > tbody > tr:nth-child(17) > td.rowfollow",
     matchRegex: /[@-]\s?(PTH)/i,
   },
+  "https://www.hddolby.com": {
+    seedList: "table > tbody > tr > td:nth-child(2) > a",
+    seedListSize: "table > tbody > tr > td:nth-child(3)",
+    seedingSummary:
+      "table > tbody > tr > td > table > tbody > tr:nth-child(17) > td.rowfollow",
+    matchRegex: /[@-]\s?(Dream|DBTV|QHstudIo|HDo)/i,
+  },
+  "https://www.tjupt.org": {
+    seedList: "table > tbody > tr > td:nth-child(2) > a",
+    seedListSize: "table > tbody > tr > td:nth-child(3)",
+    seedingSummary:
+      "table > tbody > tr > td > table > tbody > tr:nth-child(19) > td.rowfollow",
+    matchRegex: /[@-]\s?(TJUPT)/i,
+  },
 };
 
 function formatBytes(bytes, decimals = 2) {
@@ -98,13 +114,13 @@ function getSeedList(seedHtml) {
         return parseFloat(v);
       });
       var size = 0;
-      if (seedSizeStr.indexOf("KB") > 0) {
+      if (seedSizeStr.match(/(KB|KiB)/i)) {
         size = num * 1024;
-      } else if (seedSizeStr.indexOf("MB") > 0) {
+      } else if (seedSizeStr.match(/(MB|MiB)/i)) {
         size = num * 1024 * 1024;
-      } else if (seedSizeStr.indexOf("GB") > 0) {
+      } else if (seedSizeStr.match(/(GB|GiB)/i)) {
         size = num * 1024 * 1024 * 1024;
-      } else if (seedSizeStr.indexOf("TB") > 0) {
+      } else if (seedSizeStr.match(/(TB|TiB)/i)) {
         size = num * 1024 * 1024 * 1024 * 1024;
       } else {
         size = num;
