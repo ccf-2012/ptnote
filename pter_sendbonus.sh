@@ -5,7 +5,7 @@ for i in {1..5}
 do
     # ...用户名...替换为你要送的用户username 
     # ...COOKIE...替换为你猫站上的Cookie
-    cm=$(curl -d 'username=...用户名...&bonusgift=10000&message=enjoy&option=13' -H 'Cookie:...COOKIE...'   "https://pterclub.com/mybonus.php?action=exchange")
+    cm=$(curl -s -d 'username=...用户名...&bonusgift=10000&message=enjoy&option=13' -H 'Cookie:...COOKIE...'   "https://pterclub.com/mybonus.php?action=exchange")
     ret=$(echo $cm)
     result=$(echo $ret | grep "你成功赠送了猫粮。")
     if [[ "$result" != "" ]];then
