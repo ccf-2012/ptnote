@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         官种保种统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432969
-// @version      0.6.2
-// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH.
+// @version      0.6.3
+// @description  count the size of the seeding official torrents, support PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt
 // @author       ccf2012
 // @match        https://hdsky.me/userdetails.php?id=*
 // @match        https://ourbits.club/userdetails.php?id=*
