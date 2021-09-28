@@ -14,7 +14,7 @@
 // @match        https://totheglory.im/userdetails.php?id=*
 // @match        https://hdhome.org/userdetails.php?id=*
 // @match        https://hdchina.org/userdetails.php?id=*
-// @match        https://那谁谁.net/userdetails.php?id=*
+// @match        https://CHANGETHIS.net/userdetails.php?id=*
 // @match        https://pterclub.com/userdetails.php?id=*
 // @icon         https://ourbits.club//favicon.ico
 // @grant        GM_addElement
@@ -24,7 +24,7 @@
 var config = {
   "hdsky.me": {
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
-    seedListSize: "#ka1 > table > tbody > tr > td:nth-child(6)",
+    seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
     seedingSummary: "#ka1 > b",
     matchRegex: /[@-]\s?(HDS)/i,
     useTitle: true,
@@ -70,7 +70,7 @@ var config = {
     useTitle: true,
     isAjaxGet: true,
   },
-  "那谁谁.net": {
+  "CHANGETHIS.net": {
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
     seedingSummary: "#ka1 > b",
