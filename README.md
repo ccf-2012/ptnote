@@ -26,7 +26,15 @@ pip install parse-torrent-title
 4. qbittorrent-auto-reflush，在某些外站可能会出现 irssi 下载种子要比 tracker 更新快的情况，这个脚本可以自动刷新 qbittorrent 出现的 `unregister` 的种子，详细用法请点击文件夹查看。
 5. auto_host_tag.py, 自动添加站点标签：根据tracker主机名添加标签，便于在webui中进行查看管理。未工作的tracker会额外添加一个`未工作`标签。
 6. pter_seed_size.js, 想着进保种组，发现需要自己统计一下自己保了多少官种，就写了这个脚本。脚本是油猴中使用，加载后，在这个页面：`https://pterclub.com/getusertorrentlist.php?userid=12345&type=seeding` 其中userid后面的12345改为你的uid。然后就会看到有作种统计按钮，点击后显示官种数量和大小。
-7. pter_sendbonus.sh 和 send_naitang.sh，分别为在猫站和白兔站批量发送猫粮和奶糖，`...用户名...`替换为你要送的用户username, `...COOKIE...`替换为你猫站或白兔上的Cookie, 发送数量改循环次数
+7. ot_sumary.js, 在作了pter站之后，继续作了多站的支持，进一步作了每个站的小组统计和站上各组的统计。
+8. pter_sendbonus.sh 和 send_naitang.sh，分别为在猫站和白兔站批量发送猫粮和奶糖，`...用户名...`替换为你要送的用户username, `...COOKIE...`替换为你猫站或白兔上的Cookie, 发送数量改循环次数。
+
+## 保种统计
+Acknowledgement: liquide, Smile-BiN
+
+当前支持PTer, SKY, OB, CHD, Hares, PTH, HDDolby, TJUPT, TTG, HDH，???, HDChina
+tampermonkey油猴中启用脚本后，在上述各站个人信息页面中，点开作种列表，会显示各站官种统计和本站官组统计。同时作种列表中本站官种以亮绿色标识。
+
 
 ## 自动分类功能的应用设想
 * 使用PT的过程中，人们非常看重保种，pter下载自己准备观看的片子，并在之后一段时间内维持在下载器中作种，对于站点和个人后续的使用来说都是有益的。所以，同时在下载器中和媒体服务器（如Emby）的媒体库目录中，对所下载的文件保持有序的管理，是有意义的。
