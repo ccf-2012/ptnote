@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         官种保种统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432969
-// @version      0.9.0
+// @version      0.9.8
 // @description  Count the seeding torrents, support PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt, TTG, HDH, ???, HDC
 // @author       ccf2012
 // @source       https://github.com/ccf-2012/ptnote
@@ -22,15 +22,16 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-const TTG_INDEX = 11;
-const OTHERS_INDEX = 14;
 var config = [
   {
     host : "hdsky.me",
+    abbrev: "SKY", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(HDS)/i,
+    seederLevels: [{seederNum: 7, seederLevelCount: 0}, {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'HDSky',
@@ -75,10 +76,17 @@ var config = [
   },
   {
     host: "pterclub.com",
+    abbrev: "PTer", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a:nth-child(1)",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(4)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(5)",
     seedingSummary: "#ka1",
     siteRegex: /[@-]\s?(PTer)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0}, 
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'PTer',
@@ -103,6 +111,12 @@ var config = [
         groupRegex: /[@-]\s?(PTerTV)\b/i,
         groupCount: 0,
         groupSize: 0,
+      },
+      {
+        groupName: '游戏',
+        groupRegex: /game.php\b/i,
+        groupCount: 0,
+        groupSize: 0,
       }
     ],
     useTitle: true,
@@ -111,10 +125,17 @@ var config = [
   },
   {
     host: "ourbits.club",
+    abbrev: "OB", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(Our|PbK|iLoveTV|FLTTH|Ao|MGs|HosT|iLoveHD)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0}, 
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'OurBits',
@@ -171,10 +192,19 @@ var config = [
   },
   {
     host: "chdbits.co",
+    abbrev: "CHD", 
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(CHD|blucook|HQC|GBT|KAN|OneHD)/i,
+    seederLevels: [
+      {seederNum: 2, seederLevelCount: 0},
+      {seederNum: 3, seederLevelCount: 0},
+      {seederNum: 4, seederLevelCount: 0},
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 10, seederLevelCount: 0},
+      {seederNum: 30, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'CHD',
@@ -230,10 +260,17 @@ var config = [
   },
   {
     host: "club.hares.top",
+    abbrev: "Hares", 
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(Hares)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0}, 
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'Hares',
@@ -260,10 +297,17 @@ var config = [
   },
   {
     host: "pthome.net",
+    abbrev: "PTH", 
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(PTH)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0}, 
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'PTHome',
@@ -313,10 +357,17 @@ var config = [
   },
   {
     host: "springsunday.net",
+    abbrev: "SSD", 
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(CMCT)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0}, 
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'CMCT',
@@ -337,10 +388,13 @@ var config = [
   },
   {
     host: "hdhome.org",
+    abbrev: "HDH", 
     seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(HDH)/i,
+    seederLevels: [{seederNum: 5, seederLevelCount: 0}, {seederNum: 10, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'HDHome',
@@ -379,11 +433,30 @@ var config = [
   },
   {
     host: "hdchina.org",
+    abbrev: "HDC", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > p",
     siteRegex: /[@-]\s?(HDC|k9611|tudou|iHD)/i,
+    seederLevels: [
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 10, seederLevelCount: 0},
+      {seederNum: 50, seederLevelCount: 0},
+      {seederNum: 100, seederLevelCount: 0}],
     groups: [
+      { 
+        groupName: 'HDChina',
+        groupRegex : /[@-]\s?(HDChina)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      { 
+        groupName: 'HDCTV',
+        groupRegex : /[@-]\s?(HDCTV)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
       { 
         groupName: 'HDC',
         groupRegex : /[@-]\s?(HDC)\b/i,
@@ -415,10 +488,16 @@ var config = [
   },
   {
     host: "hddolby.com",
+    abbrev: "DB", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(Dream|DBTV|QHstudIo|HDo)/i,
+    seederLevels: [
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'Dream',
@@ -451,10 +530,16 @@ var config = [
   },
   {
     host: "tjupt.org",
+    abbrev: "TJU", 
     seedList: "#ka1 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka1 > table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
     seedingSummary: "#ka1 > b",
     siteRegex: /[@-]\s?(TJUPT)/i,
+    seederLevels: [
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 7, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'TJUPT',
@@ -469,11 +554,17 @@ var config = [
   },
   {
     host: "totheglory.im",
+    abbrev: "TTG", 
     seedList: "#ka2 > table > tbody > tr > td:nth-child(2) > a",
     seedListSize: "#ka2 > table > tbody > tr > td:nth-child(4)",
+    seedListSeederCount: "#ka2 > table > tbody > tr > td:nth-child(5)",
     seedingSummary:
       "#main_table > tbody > tr:nth-child(1) > td > table > tbody > tr > td > table > tbody > tr:nth-child(16) > td:nth-child(2)",
     siteRegex: /[@-]\s?(TTG|Wiki|NGB|DoA|ARiN|ExREN)/i,
+    seederLevels: [
+      {seederNum: 5, seederLevelCount: 0},
+      {seederNum: 8, seederLevelCount: 0},
+      {seederNum: 11, seederLevelCount: 0}],
     groups: [
       { 
         groupName: 'TTG',
@@ -518,10 +609,12 @@ var config = [
   },
   {
     host: "frds",
+    abbrev: "FRDS", 
     seedList: "",
     seedListSize: "",
     seedingSummary: "",
     siteRegex: /[@-]\s?(FRDS)/i,
+    seederLevels: [],
     groups:[],
     useTitle: false,
     torCount: 0,
@@ -529,10 +622,25 @@ var config = [
   },
   {
     host: "beitai",
+    abbrev: "BeiTai", 
     seedList: "",
     seedListSize: "",
     seedingSummary: "",
     siteRegex: /[@-]\s?(BeiTai)/i,
+    groups:[],
+    seederLevels: [],
+    useTitle: false,
+    torCount: 0,
+    torSize: 0,
+  },
+  {
+    host: "beast",
+    abbrev: "beAst", 
+    seedList: "",
+    seedListSize: "",
+    seedingSummary: "",
+    siteRegex: /[@-]\s?(beAst)/i,
+    seederLevels: [],
     groups:[],
     useTitle: false,
     torCount: 0,
@@ -540,10 +648,12 @@ var config = [
   },
   {
     host: "Others",
+    abbrev: "Others", 
     seedList: "",
     seedListSize: "",
     seedingSummary:"",
     siteRegex: /[@-]\s?(Others)/i,
+    seederLevels: [],
     groups:[],
     useTitle: false,
     torCount: 0,
@@ -551,6 +661,8 @@ var config = [
   },
 ];
 
+const TTG_INDEX = 11;
+var OTHERS_INDEX = config.length-1;
 
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -593,29 +705,57 @@ function getSeedList(seedHtml, theConfig) {
   var seedListSize = seedHtml.querySelectorAll(
     theConfig.seedListSize
   );
+  var seedListSeederNum = seedHtml.querySelectorAll(
+    theConfig.seedListSeederCount
+  );
+  
   var totalTorCount = 0;
   var totalTorSize = 0;
 
   for (var i = 0; i < seedList.length; i++) {
     var torName;
     var torSize;
+    var torSeederNum;
     var foundGroup;
     if (theConfig.useTitle) torName = seedList[i].title;
     else torName = seedList[i].innerText;
+
     torSize = sizeStrToBytes(seedListSize[i + 1].innerText);
     totalTorCount ++;
     totalTorSize += torSize;
 
     var foundConfig = config.find(cc => torName.match(cc.siteRegex))
+    // for pterclub, all game is counted as ot
+    var isPTerGameCat = false;
+    if (theConfig.host == "pterclub.com") {
+      isPTerGameCat = seedList[i].href.match(/game.php\b/i);
+      if (isPTerGameCat) {
+        foundConfig = theConfig;
+      }
+    }
+
     if (foundConfig){
       foundConfig.torCount ++;
       if (foundConfig == theConfig) {
         seedList[i].parentNode.style = "background-color: lightgreen;";
-        foundGroup = theConfig.groups.find(gg => torName.match(gg.groupRegex));
+        if (isPTerGameCat) {
+          foundGroup = theConfig.groups.find(gg => (gg.groupName == '游戏'));
+        } else {
+          foundGroup = theConfig.groups.find(gg => torName.match(gg.groupRegex));
+        }
         if (foundGroup){
           foundGroup.groupCount++;
           foundGroup.groupSize += torSize;
         }
+        // cat the seeder level
+        torSeederNum = parseFloat(seedListSeederNum[i+1].innerText);
+        for (var sl=0; sl < theConfig.seederLevels.length; sl++) {
+          if (torSeederNum < theConfig.seederLevels[sl].seederNum) {
+            theConfig.seederLevels[sl].seederLevelCount++;
+            break;
+          }
+        }
+
       }
       foundConfig.torSize += torSize;
     } else {
@@ -633,28 +773,41 @@ function getSeedList(seedHtml, theConfig) {
   GM_addStyle("#ot_summary td, #ot_summary th{border: 1px solid #ddd;padding: 4px;}");
   GM_addStyle("#ot_summary th{padding-top: 6px;padding-bottom: 6px;text-align: left;color: white;background-color: #2f4879;}");
 
-  var groupSumary = '<table id="ot_summary"><tr><th>官组</th><th>数量</th><th>大小</th><tbody>';
+  var groupSumary = '<table id="ot_summary"><tbody><th>官组</th><th>数量</th><th>大小</th>';
   for (i=0; i<theConfig.groups.length; i++){
     if (theConfig.groups[i].groupCount >0){
       groupSumary += '<tr><td>'+theConfig.groups[i].groupName+'</td><td>'+theConfig.groups[i].groupCount+'</td><td>' +formatBytes(theConfig.groups[i].groupSize)+'</td></tr>';
     }
   }
   groupSumary += '</tbody></table>';
-  var sitesSumary = '<table id="ot_summary"><tr><th>各站官种</th><th>数量</th><th>大小</th>';
+
+  var seederLevelSumary = '';
+  if (theConfig.seederLevels.length > 0) {
+    seederLevelSumary = '<table id="ot_summary"><tbody><th>作种人数</th><th>数量</th>';
+    for (i=0; i<theConfig.seederLevels.length; i++){
+      seederLevelSumary += '<tr><td> 小于 '+theConfig.seederLevels[i].seederNum+'</td><td>'+theConfig.seederLevels[i].seederLevelCount+'</td></tr>'
+    }
+    seederLevelSumary += '</tbody></table>';      
+  }
+
+  var sitesSumary = '<table id="ot_summary"><tbody><th>各站官种</th><th>数量</th><th>大小</th>';
   for (i=0; i<config.length; i++ )
   {
     if (config[i].torCount > 0) {
-      sitesSumary += '<tr><td>'+config[i].host + '</td><td>'+ config[i].torCount + '</td><td>' + formatBytes(config[i].torSize) + '</td></tr>';
+      sitesSumary += '<tr><td>'+config[i].abbrev + '</td><td>'+ config[i].torCount + '</td><td>' + formatBytes(config[i].torSize) + '</td></tr>';
     }
   }
   sitesSumary += '</tbody></table>';
 
+
   var summary = document.querySelector(theConfig.seedingSummary);
-  summary.innerHTML = '<table id="ot_block"><tbody><tr><td>'+
-    '作种总数：' + totalTorCount + ' 总大小： '+ formatBytes(totalTorSize) + '<p>' + sitesSumary + 
-    '</td><td>'+
-    '本站官种数量：' + theConfig.torCount + ' 官种大小： '+ formatBytes(theConfig.torSize) + '<p>' + groupSumary +
-    '</td></tr></tbody></table>'+summary.innerHTML ;
+  summary.innerHTML = '<table id="ot_block"><tbody><tr><td>'
+    + '作种总数：' + totalTorCount + ' 总大小： '+ formatBytes(totalTorSize) + '<br>' 
+    + sitesSumary + '</td><td>'
+    + '<div>本站官种数量：' + theConfig.torCount + ' 官种大小： '+ formatBytes(theConfig.torSize) + '<br>' 
+    + groupSumary 
+    + '</div><div><p>' + seederLevelSumary +'</div>'
+    + '</td></tr></tbody></table>'+summary.innerHTML ;
 
 }
 
