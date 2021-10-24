@@ -31,19 +31,12 @@ pip install transmission-rpc
 * 幸运的是，QB提供了分类（Category）和存储目录（Save Location）的管理功能，并提供了api，所以这里写了一些脚本，以方便地在QB中维护所下载的文件。
 
 ## tr_category.py
-* 修改以下内容
-```py
-TR_PARAM = {
-    'host': '192.168.5.6',
-    'port': 9901,
-    'username': 'admin',
-    'password': 'admin'
-}
-TR_ROOT = '/volume2/video/tr'
-REAL_MOVE = False
-```
+* 以人类正常理解力修改 trcat_config.yaml
+* 然后运行
+
 
 ## qb_category.py
+> 第一次写的，勉强可用
 * 设想的使用场景是这样子，如果是初次使用：
 1. `auto_category.py` 中设置好QB：
    1. QB下载器的ip, 端口，用户名，密码，`QB_PARAM`
