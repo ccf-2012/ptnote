@@ -2,7 +2,7 @@ import qbittorrentapi
 import urllib.parse
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
-qbt_client = qbittorrentapi.Client(host='192.168.1.8', port=8189, username='admin', password='adminadmin')
+qbt_client = qbittorrentapi.Client(host='192.168.5.6', port=8191, username='admin', password='adminadmin')
 
 try:
     qbt_client.auth_log_in()

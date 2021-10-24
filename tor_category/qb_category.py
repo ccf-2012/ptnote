@@ -5,7 +5,7 @@ import PTN
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
 QB_PARAM = {
-    'host': '192.168.1.8',
+    'host': '192.168.5.8',
     'port': 8189,
     'username': 'admin',
     'password': 'adminadmin'
@@ -34,16 +34,16 @@ def setCategory(torrent, catstr):
     CATEGORIES[catstr][2] += 1
     print(
         f'{CATEGORIES[catstr][0]}: \033[{CATEGORIES[catstr][1]}m{torrent.name}\033[0m ({torrent.state})')
-    
+
     # 真要修改，就去掉下面的注释
-    # torrent.setCategory(CATEGORIES[catstr][0])
+    torrent.setCategory(CATEGORIES[catstr][0])
     # 设置自动管理后会移动文件
-    # torrent.setAutoManagement(True)
+    torrent.setAutoManagement(True)
 
     # 另一种方法，似乎不如直接设置自动管理好，暂存这里
     # 要一并修改磁盘上存储的位置就把下面注释拿掉，一定抬头看一下上面的QB_ROOT的位置
     # 由于同一位置会有多站辅种，有概率会导致一些站点设置存储位置后重新校验，风险预警
-    #### torrent.setLocation(QB_ROOT+CATEGORIES[catstr][0])
+    # torrent.setLocation(QB_ROOT+CATEGORIES[catstr][0])
     return
 
 
@@ -56,7 +56,8 @@ def qbInitCategory(qbt_client):
 
 def qbAutoCategory(qbt_client):
     # 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
-    skipCategories = ['儿童剧集', '儿童', 'Child', 'ChildTV', 'Music', 'Audio', 'Document', 'PACK']
+    skipCategories = ['儿童剧集', '儿童', 'Child', 'ChildTV', 'Music',
+                      'Audio', 'Document', 'PACK', 'MySeed', 'Foreigns', 'FRDS', 'SGNB']
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     tvGroups = ['CMCTV',  'FLTTH']
     # 有些Web组，即生产TV又生产Movie，种子名上又不显示，得看文件
@@ -69,8 +70,8 @@ def qbAutoCategory(qbt_client):
     # 有些组专门作压制，但是不在种子名上标记
     movieEncodeGroup = ['CMCT', 'FRDS']
 
-    # for torrent in qbt_client.torrents_info(sort='name', category='Movie'):
-    for torrent in qbt_client.torrents.info(sort='name'):
+    for torrent in qbt_client.torrents_info(sort='name', category='NEW'):
+        # for torrent in qbt_client.torrents.info(sort='name'):
         # 注意，所有torrent都会设为 **非自动** 管理，否则修改了分类将引发文件搬移
         # torrent.use_auto_torrent_management = False
         torrent.setAutoManagement(False)
@@ -106,7 +107,7 @@ def qbAutoCategory(qbt_client):
                     setCategory(torrent, 'TV')
                 else:
                     setCategory(torrent, 'MovieWebdl')
-            ## 非web组出的
+            # 非web组出的
             elif info.__contains__('quality'):
                 # 来源为原盘的
                 if info['quality'] in ['Blu-ray']:
@@ -133,7 +134,7 @@ def qbAutoCategory(qbt_client):
                     else:
                         setCategory(torrent, 'MovieWebdl')
                 else:
-                    ## 有quality参数，但是不是Blu-ray也不是WEB-DL，就Other了吧
+                    # 有quality参数，但是不是Blu-ray也不是WEB-DL，就Other了吧
                     setCategory(torrent, 'Other')
             # TV/MV/Audio都匹配不上，quality没标记，就按组猜了
             elif info.__contains__('encoder'):
@@ -143,7 +144,7 @@ def qbAutoCategory(qbt_client):
             elif re.search('￡CMCT', torrent.name, re.I):
                 setCategory(torrent, 'MovieEncode')
             else:
-                ## Other的条件： TV/MV/Audio都匹配不上，quality没标记，各种压制组也对不上
+                # Other的条件： TV/MV/Audio都匹配不上，quality没标记，各种压制组也对不上
                 setCategory(torrent, 'Other')
 
     mvSum = 0

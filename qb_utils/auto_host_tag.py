@@ -5,7 +5,7 @@ import re
 
 # qb的 ip地址, port，登陆帐号密码，自行修改
 QB_PARAM = {
-    'host': '192.168.1.8',
+    'host': '192.168.5.8',
     'port': 8189,
     'username': 'admin',
     'password': 'adminadmin'
