@@ -1,0 +1,18 @@
+
+transmission:
+  host: 192.168.5.66
+  port: 9901
+  username: admin
+  password: admin
+
+rootdir: '/volume2/video/tr'
+realmove: False
+skipdir:
+  - Music
+  - Audio
+  - Document
+  - PACK
+  - MySeed
+  - SGNB
+  - Child
+  - ChildTV

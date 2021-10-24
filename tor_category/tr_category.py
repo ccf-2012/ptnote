@@ -1,16 +1,17 @@
 from transmission_rpc import Client
 import re
 import PTN
+import yaml
+import os
 
-TR_PARAM = {
-    'host': '192.168.5.6',
-    'port': 9901,
-    'username': 'admin',
-    'password': 'admin'
-}
+TRCAT_CONFIG = 'trcat_config.yaml'
+
 TR_ROOT = '/volume2/video/tr'
 REAL_MOVE = False
 
+# 如果有些分类已经设好，不想重新识别分类的放在 skipCategories
+skipCategories = ['儿童剧集', '儿童', 'Child', 'ChildTV', 'Music',
+                  'Audio', 'Document', 'PACK', 'MySeed', 'Foreigns', 'FRDS', 'SGNB']
 # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
 tvGroups = ['CMCTV',  'FLTTH']
 # 有些组专门生产 MV
@@ -27,13 +28,16 @@ CATEGORIES = {
     'Audio': ['Audio', '32;1', 0, 'Audio'],
     'Music': ['Music', '31', 0, 'Music'],
     'eBook': ['eBook', '34', 0, 'eBook'],
-    'MovieEncode': ['MovieEncode', '36', 0, 'MovieEncode'],  # 压制 1080p and lower, 适合emby
-    'MovieRemux': ['MovieRemux', '36', 0, 'MovieRemux'],    # Remux 1080p and lower, 适合emby
+    # 压制 1080p and lower, 适合emby
+    'MovieEncode': ['MovieEncode', '36', 0, 'MovieEncode'],
+    # Remux 1080p and lower, 适合emby
+    'MovieRemux': ['MovieRemux', '36', 0, 'MovieRemux'],
     'Movie4K': ['Movie4K', '36', 0, 'Movie4K'],          # 压制和Remux 4K，适合emby
     'MovieWebdl': ['MovieWebdl', '36', 0, 'MovieWebdl'],    # Web DL，适合emby
     'MovieWeb4K': ['MovieWeb4K', '36', 0, 'MovieWeb4K'],    # Web DL，适合emby
     'MovieBDMV': ['MovieBDMV', '35', 0, 'MovieBDMV'],      # 原盘, 适合播放机 & kodi
-    'MovieBDMV4K': ['MovieBDMV4K', '35', 0, 'MovieBDMV4K'],  # 原盘 4K, 适合播放机 & kodi
+    # 原盘 4K, 适合播放机 & kodi
+    'MovieBDMV4K': ['MovieBDMV4K', '35', 0, 'MovieBDMV4K'],
     'Other': ['Other', '33', 0, 'Others']
 }
 
@@ -91,6 +95,7 @@ def categoryTvByName(torrent, ptnInfo):
         return False
     return True
 
+
 def categoryByGroup(torrent, group):
     if group in mvGroups:
         setCategory(torrent, 'MV')
@@ -115,6 +120,7 @@ def parseGroup(torName):
         return groupName
 
     return None
+
 
 def categoryByQuality(torrent, ptnInfo):
     if ptnInfo.__contains__('quality'):
@@ -170,18 +176,38 @@ def categoryTorrent(torrent):
         setCategory(torrent, 'Other')
         return False
 
+
+def inSkipCategory(torDir):
+    for skipCat in skipCategories:
+        if torDir == TR_ROOT + '/' + skipCat:
+            return True
+    return False
+
+
+def loadConfig():
+    global TR_ROOT, REAL_MOVE, skipCategories
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    with open(os.path.join(__location__, TRCAT_CONFIG),'r', encoding="utf-8") as f:
+        ymldata = yaml.safe_load(f)
+
+    TR_ROOT = ymldata["rootdir"]
+    REAL_MOVE = ymldata["realmove"]
+    skipCategories = ymldata["skipdir"]
+    return ymldata["transmission"]
+
+
 def main():
-    c = Client(host=TR_PARAM['host'], port=TR_PARAM['port'],
-               username=TR_PARAM['username'], password=TR_PARAM['password'])
+    trConfig = loadConfig()
+    c = Client(host=trConfig['host'], port=trConfig['port'],
+               username=trConfig['username'], password=trConfig['password'])
 
     # tor1 = c.get_torrent(2632, arguments=['id','name', 'downloadDir', 'status'])
     # categoryTorrent(tor1)
-
-    torList = c.get_torrents(arguments=['id','name', 'downloadDir', 'status'])
-    for tor in torList :
-        ### tor.locate_data(TR_ROOT)
+    torList = c.get_torrents(arguments=['id', 'name', 'downloadDir', 'status'])
+    for tor in torList:
+        # tor.locate_data(TR_ROOT)
         # if tor.download_dir.startswith(TR_ROOT+ '/Others'):
-        if tor.download_dir == TR_ROOT:
+        if not inSkipCategory(tor.download_dir):
             print(tor.id, tor.name, tor.download_dir)
             categoryTorrent(tor)
 
