@@ -5,14 +5,16 @@ transmission:
   username: admin
   password: admin
 
-rootdir: '/volume2/video/tr'
 realmove: False
-skipdir:
-  - Music
-  - Audio
-  - Document
-  - PACK
-  - MySeed
-  - SGNB
-  - Child
-  - ChildTV
+
+filepath:
+  rootdir: '/volume2/video/tr'
+  skipdir:
+    - Music
+    - Audio
+    - Document
+    - PACK
+    - MySeed
+    - SGNB
+    - Child
+    - ChildTV

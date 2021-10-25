@@ -190,10 +190,18 @@ def loadConfig():
     with open(os.path.join(__location__, TRCAT_CONFIG),'r', encoding="utf-8") as f:
         ymldata = yaml.safe_load(f)
 
-    TR_ROOT = ymldata["rootdir"]
+    TR_ROOT = ymldata["filepath"]["rootdir"]
     REAL_MOVE = ymldata["realmove"]
-    skipCategories = ymldata["skipdir"]
+    skipCategories = ymldata["filepath"]["skipdir"]
     return ymldata["transmission"]
+
+
+def printSumary():
+    torSum = 0
+    for cat in CATEGORIES.keys():
+        print(f'{CATEGORIES[cat][0]} : {CATEGORIES[cat][2]}')
+        torSum += CATEGORIES[cat][2]
+    print(f'Total : {torSum}')
 
 
 def main():
@@ -211,12 +219,7 @@ def main():
             print(tor.id, tor.name, tor.download_dir)
             categoryTorrent(tor)
 
-    torSum = 0
-    for cat in CATEGORIES.keys():
-        print(f'{CATEGORIES[cat][0]} : {CATEGORIES[cat][2]}')
-        torSum += CATEGORIES[cat][2]
-    print(f'Total : {torSum}')
-
+    printSumary()
 
 if __name__ == '__main__':
     main()

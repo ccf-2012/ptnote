@@ -26,17 +26,22 @@ pip install transmission-rpc
 * https://code.visualstudio.com/docs/languages/python
 
 
-## 自动分类功能的应用设想
+## 自动分类功能的应用
 * 使用PT的过程中，人们非常看重保种，pter下载自己准备观看的片子，并在之后一段时间内维持在下载器中作种，对于站点和个人后续的使用来说都是有益的。所以，同时在下载器中和媒体服务器（如Emby）的媒体库目录中，对所下载的文件保持有序的管理，是有意义的。
 * 幸运的是，QB提供了分类（Category）和存储目录（Save Location）的管理功能，并提供了api，所以这里写了一些脚本，以方便地在QB中维护所下载的文件。
 
 ## tr_category.py
-* 以人类正常理解力修改 trcat_config.yaml
-* 然后运行
+*  修改 `trcat_config.yaml`
+  * `transmission`部分，以人类正常理解方式修改
+  * `realmove` 设为True 才真正执行数据搬移，False是用于检查的
+  * `filepath` 中:
+    * `rootdir` 是文件的根目标，各分类目录会建在它之下，
+    * `skipdir` 是指在rootdir下面这些子目录里的种子不会被搬动
+* 然后运行 `tr_category.py`
 
 
 ## qb_category.py
-> 第一次写的，勉强可用
+> 第一次写的，没单独写config，要改代码使用
 * 设想的使用场景是这样子，如果是初次使用：
 1. `auto_category.py` 中设置好QB：
    1. QB下载器的ip, 端口，用户名，密码，`QB_PARAM`
