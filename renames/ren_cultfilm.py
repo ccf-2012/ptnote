@@ -2,9 +2,17 @@ import os
 import shutil
 import argparse
 import re
-from humanbytes import HumanBytes
 from tortitle import parseMovieName
 
+
+def humansize(num1, suffix="B"):
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if num1 < 1024.0:
+            #return f"{num:3.1f}{unit}{suffix}"
+            return "%.2f %s%s" % (num1, unit, suffix)
+        num1 /= 1024.0
+    return "%s YiB" % (num1)
+    #return f"{num:.1f}Yi{suffix}"
 
 def ensureDir(file_path):
     if os.path.isfile(file_path):
@@ -54,7 +62,9 @@ def replaceCultFilms(fromDir):
 
             if os.path.isdir(movieFullPath):
                 parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
-                sizeStr = HumanBytes(sumSize)
+                sum = sumSize(movieFullPath)
+                sizeStr = humansize(sum)
+                # sizeStr = HumanBytes.format(sumSize, True)
                 print('https://<site domain>/torrents.php?searchstr=%s+%s  ( %s ) : %s' % (parseTitle, parseYear, sizeStr, mediaTargeDir))
                 hdlinkCopy(movieFullPath, mediaTargeDir)
 
