@@ -40,8 +40,8 @@ def replaceCultFilms(fromDir):
             mediaTargeDir = os.path.join(fromDir, toDir)
 
             if os.path.isdir(movieFullPath):
-                parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
-                print('%s %s %s' % (parseTitle, parseYear, mediaTargeDir))
+                parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
+                print('%s %s   %s' % (parseTitle, parseYear, mediaTargeDir))
                 hdlinkCopy(movieFullPath, mediaTargeDir)
 
 
