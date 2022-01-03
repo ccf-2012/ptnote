@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         官种保种统计
 // @namespace    https://greasyfork.org/zh-CN/scripts/432969
-// @version      0.10.2
-// @description  Count the seeding torrents, support PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt, TTG, HDH, ???, HDC, PtSbao
+// @version      0.11
+// @license      GPL-3.0 License
+// @description  Count the seeding torrents, support ADE, PTer, SKY, OB, CHD, Hares, PTH, hddolby, tjupt, TTG, HDH, SSD, HDC, PtSbao
 // @author       ccf2012
 // @source       https://github.com/ccf-2012/ptnote
 // @match        https://hdsky.me/userdetails.php?id=*
@@ -18,12 +19,68 @@
 // @match        https://springsunday.net/userdetails.php?id=*
 // @match        https://pterclub.com/userdetails.php?id=*
 // @match        https://ptsbao.club/userdetails.php?id=*
+// @match        https://audiences.me/userdetails.php?id=*
 // @icon         https://ourbits.club//favicon.ico
 // @grant        GM_addElement
 // @grant        GM_addStyle
 // ==/UserScript==
 
 var config = [
+  {
+    host: "audiences.me",
+    abbrev: "ADE", 
+    seedList: "#ka1 >  table > tbody > tr > td:nth-child(2) > a",
+    seedListSize: "#ka1 >  table > tbody > tr > td:nth-child(3)",
+    seedListSeederCount: "#ka1 > table > tbody > tr > td:nth-child(4)",
+    seedingSummary: "#ka1 > b",
+    siteRegex: /[@-]\s?(Audies|ADE|ADWeb|ADAudio|ADeBook|ADMusic)/i,
+    seederLevels: [
+      {seederNum: 3, seederLevelCount: 0, seederLevelSize: 0}, 
+      {seederNum: 5, seederLevelCount: 0, seederLevelSize: 0},
+      {seederNum: 7, seederLevelCount: 0, seederLevelSize: 0},
+      {seederNum: 11, seederLevelCount: 0, seederLevelSize: 0}
+    ],
+    groups: [
+      { 
+        groupName: 'Audies',
+        groupRegex : /[@-]\s?(Audies)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      {
+        groupName: 'ADE',
+        groupRegex: /[@-]\s?(ADE)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      {
+        groupName: 'ADWeb',
+        groupRegex: /[@-]\s?(ADWeb)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      {
+        groupName: 'ADAudio',
+        groupRegex: /[@-]\s?(ADAudio)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      {
+        groupName: 'ADeBook',
+        groupRegex: /[@-]\s?(ADeBook)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      },
+      {
+        groupName: 'ADMusic',
+        groupRegex: /[@-]\s?(ADMusic)\b/i,
+        groupCount: 0,
+        groupSize: 0,
+      }, 
+    ],    useTitle: true,
+    torCount: 0,
+    torSize: 0,
+  },
   {
     host : "hdsky.me",
     abbrev: "SKY", 
