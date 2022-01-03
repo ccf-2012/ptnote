@@ -2,7 +2,7 @@ import os
 import shutil
 import argparse
 import re
-from renames.humanbytes import HumanBytes
+from humanbytes import HumanBytes
 from tortitle import parseMovieName
 
 
