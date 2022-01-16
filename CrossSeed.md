@@ -1,10 +1,10 @@
 # 外站辅种笔记
 
 ## 概述
-外站通常提供api进行种子搜索，需要通过[Jackett](https://github.com/Jackett/Jackett)这样的包装进行访问。
-Jackett之外，还需要一个是在本地种子/文件中找匹配的脚本。这里试过两个：
-* cross-seed: https://github.com/mmgoodnow/cross-seed
-* Cross-Seed-AutoDL: https://github.com/BC44/Cross-Seed-AutoDL
+* 外站通常提供api进行种子搜索，需要通过[Jackett](https://github.com/Jackett/Jackett)这样的包装进行访问。
+* Jackett之外，还需要一个在本地种子/文件中找匹配的脚本。这里试过两个：
+  * cross-seed: https://github.com/mmgoodnow/cross-seed
+  * Cross-Seed-AutoDL: https://github.com/BC44/Cross-Seed-AutoDL
 
 以下是太长不看笔记：
 > 其中的`192.168`开头的主机地址，以及`/volume1`和`/home/ccf2012/`开头的目录名都是要改的，你知道的吧
@@ -40,7 +40,7 @@ docker-compose up -d
 ```
 
 ### Linux上安装
-* 以普通用户下载、运行就好
+* 以普通用户操作就好
 > 这是2022.1.15的下载地址
 ```sh
 wget https://github.com/Jackett/Jackett/releases/download/v0.20.285/Jackett.Binaries.LinuxAMDx64.tar.gz
@@ -60,8 +60,8 @@ systemctl start jackett.service
 
 ### 运行Jackett
 * 开起来后，以 `http://<your-ip>:9117` 连接查看
-* 注意安装好的Jackett会有一个自己的api key, 记下来，替换后面的`<jackett api-key>`
-* `Add Indexer`, 到外站个人的通常是`Security` 页面上，找`API Key`填写
+* 注意安装好的Jackett会有一个自己的 Api key, 记下来，替换后面的`<jackett api-key>`
+* `Add Indexer`, 到外站，通常是个人 `Security` 页面上，找 `API Key` 填写
 
 
 ## Cross-Seed-AutoDL
@@ -88,7 +88,7 @@ python3 -m pip install -r requirements.txt
 ```sh
 python3 CrossSeedAutoDL.py -p -i "/volume1/video/downloads/" -s "/volume1/video/tors" -u "http://192.168.5.6:9117" -k "<jackett api-key>" 
 ```
-* 下载的torrent在 上面 `-s` 指向的目录
+* 下载的torrent 文件保存在上面 `-s` 指向的目录
   
 
 ## cross-seed
@@ -119,6 +119,6 @@ npx cross-seed search \
    2. Deluge: `Add torrents in Paused state` 打勾
    3. qbittorrent: `不要自动开始下载` 打勾
 3. 即使组相同版本相同，也会有一些文件名上的细微不同，需要自己小心处理，如：
-   1. `FraMeSToR`组的，不同外站，有的是在目录中的，有的是单文件的
+   1. `FraMeSToR` 组的，不同外站，有的是在目录中的，有的是单文件的
    2. `CultFilms™` 组的，在一些站上是改为 `CultFilms` 
    3. 还有的带nfo的，有的不带
