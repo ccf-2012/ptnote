@@ -41,7 +41,7 @@ docker-compose up -d
 
 ### Linux上安装
 * 以普通用户下载、运行就好
-> 这是2021.1.15的下载地址
+> 这是2022.1.15的下载地址
 ```sh
 wget https://github.com/Jackett/Jackett/releases/download/v0.20.285/Jackett.Binaries.LinuxAMDx64.tar.gz
 tar xvzf Jackett.Binaries.LinuxAMDx64.tar.gz
