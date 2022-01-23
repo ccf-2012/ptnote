@@ -14,13 +14,15 @@ def humansize(num1, suffix="B"):
     return "%s YiB" % (num1)
     #return f"{num:.1f}Yi{suffix}"
 
+
 def ensureDir(file_path):
     if os.path.isfile(file_path):
         file_path = os.path.dirname(file_path)
     if not os.path.exists(file_path):
         os.makedirs(file_path)
 
-def sumSize(start_path = '.'):
+
+def sumSize(start_path='.'):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
@@ -47,7 +49,8 @@ def hdlinkCopy(fromLoc, toLoc):
 def loadArgs():
     parser = argparse.ArgumentParser(
         description='ren_cultfilm: a script to rename cultfilm folder.')
-    parser.add_argument('MEDIA_DIR', help='The directory contains CultFilm dirs.')
+    parser.add_argument('MEDIA_DIR',
+                        help='The directory contains CultFilm dirs.')
 
     global g_args
     g_args = parser.parse_args()
@@ -61,11 +64,14 @@ def replaceCultFilms(fromDir):
             mediaTargeDir = os.path.join(fromDir, toDir)
 
             if os.path.isdir(movieFullPath):
-                parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
+                parseTitle, parseYear, parseSeason, cntitle = parseMovieName(
+                    movieItem)
                 sum = sumSize(movieFullPath)
                 sizeStr = humansize(sum)
                 # sizeStr = HumanBytes.format(sumSize, True)
-                print('https://<site domain>/torrents.php?searchstr=%s+%s  ( %s ) : %s' % (parseTitle, parseYear, sizeStr, mediaTargeDir))
+                print(
+                    'https://<site domain>/torrents.php?searchstr=%s+%s  ( %s ) : %s'
+                    % (parseTitle, parseYear, sizeStr, mediaTargeDir))
                 hdlinkCopy(movieFullPath, mediaTargeDir)
 
 
